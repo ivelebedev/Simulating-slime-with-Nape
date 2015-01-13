@@ -42,16 +42,16 @@
 			frame = new BitmapData(640,480,true,0);
 			addChild(new Bitmap(frame));
 
-			//SWFProfiler.init(stage, this);
+			SWFProfiler.init(stage, this);
                         
 			addEventListener(Event.ENTER_FRAME, update);
 		}
 
-		private function createShape(radius:int, color):Shape
+		private function createShape(radius:int):Shape
 		{
 			var child = new Shape();
-			child.graphics.beginFill(color);
-			child.graphics.lineStyle(1, color);
+			child.graphics.beginFill(0xFF);
+			child.graphics.lineStyle(1, 0xFF);
 			child.graphics.drawCircle(0, 0, radius);
 			child.graphics.endFill();
 			return child;
@@ -64,12 +64,12 @@
 			platfrom.space = core.space();
 
 		}
-		private function createBall(x:Number, y:Number, radius:int, color):void
+		private function createBall(x:Number, y:Number, radius:int):void
 		{
 			var waterBody:Body = new Body(BodyType.DYNAMIC,new Vec2(x,y));
 			waterBody.shapes.add(new Circle(radius));
 			waterBody.space = core.space();
-			balls.push(new Array(waterBody, radius, color));
+			balls.push(new Array(waterBody, radius));
 		}
 
 		private function updateGraphic(body:Body):void
@@ -90,7 +90,6 @@
 			{
 				var ball:Body = balls[i][0];
 				var radius:int = balls[i][1];
-				var color = balls[i][2];
 				if (balls.length > 200 || ball.position.x > APP_WIDTH || ball.position.x < 0 || ball.position.y < 0 || ball.position.y > APP_HEIGHT && balls.length > 0)
 				{
 					balls[i] = null;
@@ -101,7 +100,7 @@
 				{
 					waterMatrix.tx = ball.position.x;
 					waterMatrix.ty = ball.position.y;
-					frame.draw(createShape(radius, color), waterMatrix);
+					frame.draw(createShape(radius), waterMatrix);
 				}
 			}
 			frame.applyFilter(frame,frame.rect,new Point(0,0),waterBlur);
